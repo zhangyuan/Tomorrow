@@ -1,7 +1,6 @@
 package com.nextcloudmedia.tomorrow;
 
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,7 +8,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -20,7 +24,7 @@ public class MainActivity extends ActionBarActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new NewsListFragment())
                     .commit();
         }
     }
@@ -49,9 +53,8 @@ public class MainActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
+    public static class NewsListFragment extends Fragment {
+        public NewsListFragment() {
         }
 
         @Override
@@ -59,6 +62,27 @@ public class MainActivity extends ActionBarActivity {
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             return rootView;
+        }
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+
+            ListView itemsListView = (ListView) getActivity().findViewById(R.id.itemsListView);
+
+            final ArrayList<String> items = new ArrayList<String>();
+
+            String[] values = new String[] { "Monday", "Friday"};
+
+            for(int i = 0; i < values.length; i++){
+                items.add(values[i]);
+            }
+
+            final ArrayAdapter<String> aa;
+
+            aa = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, items);
+
+            itemsListView.setAdapter(aa);
         }
     }
 
