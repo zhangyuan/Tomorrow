@@ -1,29 +1,30 @@
 package com.nextcloudmedia.tomorrow;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
+import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVOSCloud;
-import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
+import com.nextcloudmedia.tomorrow.adapter.PostListArrayAdapter;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Properties;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -81,7 +82,7 @@ public class MainActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class NewsListFragment extends Fragment {
+    public class NewsListFragment extends Fragment {
         public NewsListFragment() {
         }
 
@@ -101,29 +102,28 @@ public class MainActivity extends ActionBarActivity {
             AVQuery<AVObject> query = new AVQuery<AVObject>("Post");
             query.setLimit(15);
             query.findInBackground(new FindCallback<AVObject>() {
-                public void done(List<AVObject> avObjects, AVException e) {
+                public void done(final List<AVObject> avObjects, AVException e) {
                     if (e == null) {
                         Log.d("成功", "查询到" + avObjects.size() + " 条符合条件的数据");
 
-
-                        final ArrayList<String> items = new ArrayList<String>();
-
-                        for(int i = 0; i < avObjects.size(); i++){
-                            items.add(avObjects.get(i).getString("title"));
-                        }
-
-                        final ArrayAdapter<String> aa;
-
-                        aa = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, items);
-
-                        itemsListView.setAdapter(aa);
-
-
+                        PostListArrayAdapter adapter = new PostListArrayAdapter(getActivity(), R.layout.post_list_entry, avObjects);
+                        itemsListView.setAdapter(adapter);
                     } else {
                         Log.d("失败", "查询错误: " + e.getMessage());
                     }
+
+                    itemsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            String text = avObjects.get(i).getString("title");
+                            Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             });
+
+
+
         }
     }
 
