@@ -21,6 +21,7 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
 import com.nextcloudmedia.tomorrow.adapter.PostListArrayAdapter;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -34,6 +35,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         initAVOS();
 
         setContentView(R.layout.activity_main);
@@ -101,6 +103,7 @@ public class MainActivity extends ActionBarActivity {
 
             AVQuery<AVObject> query = new AVQuery<AVObject>("Post");
             query.setLimit(15);
+            query.orderByDescending("createdAt");
             query.findInBackground(new FindCallback<AVObject>() {
                 public void done(final List<AVObject> avObjects, AVException e) {
                     if (e == null) {
