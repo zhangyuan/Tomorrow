@@ -19,6 +19,11 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.GetDataCallback;
 import com.nextcloudmedia.tomorrow.R;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 public class PostListArrayAdapter extends ArrayAdapter<AVObject> {
@@ -51,15 +56,36 @@ public class PostListArrayAdapter extends ArrayAdapter<AVObject> {
         TextView textView = (TextView) newView.findViewById(R.id.postListEntryTextView);
 
         AVObject current = objects.get(position);
-        AVFile imageFile = current.getAVFile("image");
+        final AVFile imageFile = current.getAVFile("image");
+
+        final File cacheDir = context.getCacheDir();
         if (imageFile != null) {
-            imageFile.getDataInBackground(new GetDataCallback(){
-                public void done(byte[] data, AVException e){
-                    Toast.makeText(context, "Image Loaded", Toast.LENGTH_SHORT).show();
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    imageView.setImageBitmap(bitmap);
-                }
-            });
+            File existedFile = new File(cacheDir, imageFile.getObjectId());
+            if(! existedFile.exists()){
+                imageFile.getDataInBackground(new GetDataCallback(){
+
+                    public void done(byte[] data, AVException e){
+                        Toast.makeText(context, "Image Loaded", Toast.LENGTH_SHORT).show();
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+                        try {
+                            File saveFile = new File(cacheDir, imageFile.getObjectId());
+                            FileOutputStream outStream = new FileOutputStream(saveFile);
+                            outStream.write(data);
+                            outStream.close();
+                        } catch (FileNotFoundException ex) {
+                            ex.printStackTrace();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+
+                        imageView.setImageBitmap(bitmap);
+                    }
+                });
+            } else {
+                Bitmap bitmap = BitmapFactory.decodeFile(existedFile.getAbsolutePath());
+                imageView.setImageBitmap(bitmap);
+            }
         }
         textView.setText(current.getString("title"));
 
