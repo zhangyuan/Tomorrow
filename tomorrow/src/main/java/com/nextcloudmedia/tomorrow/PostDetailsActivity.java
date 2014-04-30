@@ -26,6 +26,8 @@ public class PostDetailsActivity extends ActionBarActivity {
                     .add(R.id.container, new PlaceholderFragment(title))
                     .commit();
         }
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
 
