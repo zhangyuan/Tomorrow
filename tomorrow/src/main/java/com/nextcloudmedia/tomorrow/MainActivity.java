@@ -1,6 +1,7 @@
 package com.nextcloudmedia.tomorrow;
 
-import android.os.AsyncTask;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -22,7 +23,6 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
 import com.nextcloudmedia.tomorrow.adapter.PostListArrayAdapter;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -32,6 +32,7 @@ import java.util.Properties;
 public class MainActivity extends ActionBarActivity {
     String app_id = "";
     String app_key = "";
+    static String EXTRA_MESSAGE = "POST_TITLE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +104,9 @@ public class MainActivity extends ActionBarActivity {
             final ListView itemsListView = (ListView) getActivity().findViewById(R.id.itemsListView);
 
             AVQuery<AVObject> query = new AVQuery<AVObject>("Post");
-            query.setLimit(15);
+            query.setLimit(5);
             query.orderByDescending("createdAt");
+
             query.findInBackground(new FindCallback<AVObject>() {
                 public void done(final List<AVObject> avObjects, AVException e) {
                     if (e == null) {
@@ -119,8 +121,13 @@ public class MainActivity extends ActionBarActivity {
                     itemsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            String text = avObjects.get(i).getString("title");
-                            Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getActivity(), PostDetailsActivity.class);
+                            String title = avObjects.get(i).getString("title");
+                            intent.putExtra(EXTRA_MESSAGE, title);
+                            startActivity(intent);
+
+//                            String text = avObjects.get(i).getString("title");
+//                            Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
                         }
                     });
                 }

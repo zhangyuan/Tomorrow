@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="entry_bg">#DDD</color>
+    <color name="entry_bg">#FFF</color>
+    <color name="bg">#DDD</color>
 </resources>
