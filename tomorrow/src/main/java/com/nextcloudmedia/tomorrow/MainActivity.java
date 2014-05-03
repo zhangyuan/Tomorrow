@@ -1,6 +1,5 @@
 package com.nextcloudmedia.tomorrow;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVException;
@@ -22,6 +20,7 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
 import com.nextcloudmedia.tomorrow.adapter.PostListArrayAdapter;
+import com.nextcloudmedia.tomorrow.models.Post;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +31,8 @@ import java.util.Properties;
 public class MainActivity extends ActionBarActivity {
     String app_id = "";
     String app_key = "";
-    static String EXTRA_MESSAGE = "POST_TITLE";
+    static String POST_TITLE_MESSAGE = "POST_TITLE";
+    static String POST_ID_MESSAGE = "POST_ID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,25 +109,30 @@ public class MainActivity extends ActionBarActivity {
 
             query.findInBackground(new FindCallback<AVObject>() {
                 public void done(final List<AVObject> avObjects, AVException e) {
+                    List<Post> posts = null;
                     if (e == null) {
                         Log.d("成功", "查询到" + avObjects.size() + " 条符合条件的数据");
 
-                        PostListArrayAdapter adapter = new PostListArrayAdapter(getActivity(), R.layout.post_list_entry, avObjects);
+                        posts = Post.initFromAVObjects(avObjects);
+
+                        PostListArrayAdapter adapter = new PostListArrayAdapter(getActivity(), R.layout.post_list_entry, posts);
                         itemsListView.setAdapter(adapter);
                     } else {
                         Log.d("失败", "查询错误: " + e.getMessage());
                     }
 
+                    final List<Post> finalPosts = posts;
                     itemsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                             Intent intent = new Intent(getActivity(), PostDetailsActivity.class);
-                            String title = avObjects.get(i).getString("title");
-                            intent.putExtra(EXTRA_MESSAGE, title);
-                            startActivity(intent);
 
-//                            String text = avObjects.get(i).getString("title");
-//                            Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+                            Post post = finalPosts.get(i);
+
+                            intent.putExtra(POST_TITLE_MESSAGE, post.getTitle());
+                            intent.putExtra(POST_ID_MESSAGE, post.getId());
+
+                            startActivity(intent);
                         }
                     });
                 }

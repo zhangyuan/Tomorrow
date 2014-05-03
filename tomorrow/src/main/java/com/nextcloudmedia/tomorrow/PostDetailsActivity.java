@@ -19,7 +19,7 @@ public class PostDetailsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_post_details);
 
         Intent intent = getIntent();
-        String title = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        String title = intent.getStringExtra(MainActivity.POST_TITLE_MESSAGE);
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
