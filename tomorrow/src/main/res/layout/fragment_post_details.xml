@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:text=""
         android:id="@+id/titleTextView"
         android:textSize="22dp"
         android:layout_marginTop="10dp"
@@ -21,21 +21,12 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
-    <ImageView
+    <WebView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:layout_below="@+id/imageView"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text=""
-        android:id="@+id/contentTextView"
+        android:id="@+id/contentWebView"
         android:layout_below="@+id/titleTextView"
         android:layout_alignLeft="@+id/titleTextView"
         android:layout_alignStart="@+id/titleTextView"
-        />
+    />
 </RelativeLayout>

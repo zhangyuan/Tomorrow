@@ -1,14 +1,19 @@
 package com.nextcloudmedia.tomorrow;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,22 +75,35 @@ public class PostDetailsActivity extends ActionBarActivity {
             this.postId = postId;
         }
 
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_post_details, container, false);
 
             TextView titleTextView = (TextView)rootView.findViewById(R.id.titleTextView);
-            final TextView contentTextView = (TextView)rootView.findViewById(R.id.contentTextView);
+            final WebView contentWebView = (WebView) rootView.findViewById(R.id.contentWebView);
 
             titleTextView.setText(postTitle);
 
             Post.initFromAVObjectId(postId, new GetPostCallback() {
                 @Override
                 public void done(Post post) {
-                    contentTextView.setText(post.getContent());
+                    contentWebView.loadData(post.getContent(), "text/html; charset=UTF-8", null);
                 }
             });
+
+            contentWebView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    return true;
+                }
+            });
+            contentWebView.setLongClickable(false);
+
+            contentWebView.setBackgroundColor(0x00000000);
+            contentWebView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+
             return rootView;
         }
     }
