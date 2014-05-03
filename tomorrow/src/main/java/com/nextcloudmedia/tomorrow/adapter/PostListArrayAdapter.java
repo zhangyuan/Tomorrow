@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.avos.avoscloud.AVObject;
 import com.nextcloudmedia.tomorrow.R;
 import com.nextcloudmedia.tomorrow.models.Post;
-import com.nextcloudmedia.tomorrow.utils.PostImageDownloadCallback;
+import com.nextcloudmedia.tomorrow.utils.DowloadPostImageCallback;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class PostListArrayAdapter extends ArrayAdapter<Post> {
 
         AVObject current = post.getAvObject();
 
-        post.dowloadImageFile(context.getCacheDir(), new PostImageDownloadCallback(){
+        post.dowloadImageFile(context.getCacheDir(), new DowloadPostImageCallback(){
             @Override
             public void done(Bitmap bitmap) {
                 imageView.setImageBitmap(bitmap);

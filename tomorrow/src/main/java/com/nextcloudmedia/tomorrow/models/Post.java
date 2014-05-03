@@ -2,13 +2,16 @@ package com.nextcloudmedia.tomorrow.models;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.GetDataCallback;
-import com.nextcloudmedia.tomorrow.utils.PostImageDownloadCallback;
+import com.nextcloudmedia.tomorrow.utils.DowloadPostImageCallback;
+import com.nextcloudmedia.tomorrow.utils.GetPostCallback;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -35,6 +38,10 @@ public class Post {
         return avObject.getString("title");
     }
 
+    public String getContent() {
+        return avObject.getString("content");
+    }
+
     public static List<Post> initFromAVObjects(List<AVObject> avObjects) {
         List<Post> posts = new ArrayList<Post>();
 
@@ -43,6 +50,23 @@ public class Post {
         }
 
         return posts;
+    }
+
+    public static void initFromAVObjectId(String objectId, final GetPostCallback getPostCallback){
+        AVQuery<AVObject> query = new AVQuery<AVObject>("Post");
+
+        query.getInBackground(objectId, new GetCallback<AVObject>(){
+            @Override
+            public void done(AVObject avObject, AVException e) {
+                if (e == null) {
+                    Post post = new Post(avObject);
+                    getPostCallback.done(post);
+                } else {
+                    Log.d("Tomorrow", "Get Post Error: " + e.getMessage());
+                }
+            }
+        });
+
     }
 
     public String getId() {
@@ -61,7 +85,7 @@ public class Post {
         return avObject.getAVFile("image");
     }
 
-    public void dowloadImageFile(final File cacheDir, final PostImageDownloadCallback callback) {
+    public void dowloadImageFile(final File cacheDir, final DowloadPostImageCallback callback) {
         final AVFile imageFile = getImageFile();
 
         if (imageFile != null) {
@@ -93,7 +117,5 @@ public class Post {
             }
         }
     }
-
-
 }
 

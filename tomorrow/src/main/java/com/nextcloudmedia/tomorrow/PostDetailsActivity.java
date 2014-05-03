@@ -10,6 +10,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.nextcloudmedia.tomorrow.models.Post;
+import com.nextcloudmedia.tomorrow.utils.GetPostCallback;
 
 public class PostDetailsActivity extends ActionBarActivity {
 
@@ -19,11 +23,14 @@ public class PostDetailsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_post_details);
 
         Intent intent = getIntent();
-        String title = intent.getStringExtra(MainActivity.POST_TITLE_MESSAGE);
+        String postTitle = intent.getStringExtra(MainActivity.POST_TITLE_MESSAGE);
+        String postId = intent.getStringExtra(MainActivity.POST_ID_MESSAGE);
+
+        setTitle(postTitle);
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment(title))
+                    .add(R.id.container, new PlaceholderFragment(postTitle, postId))
                     .commit();
         }
 
@@ -54,12 +61,13 @@ public class PostDetailsActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public class PlaceholderFragment extends Fragment {
+        private String postTitle;
+        private String postId;
 
-        private String title;
-
-        public PlaceholderFragment(String title) {
-            this.title = title;
+        public PlaceholderFragment(String postTitle, String postId) {
+            this.postTitle = postTitle;
+            this.postId = postId;
         }
 
         @Override
@@ -67,9 +75,17 @@ public class PostDetailsActivity extends ActionBarActivity {
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_post_details, container, false);
 
-            TextView titleTextView = (TextView)rootView.findViewById(R.id.textView);
-            titleTextView.setText(title);
+            TextView titleTextView = (TextView)rootView.findViewById(R.id.titleTextView);
+            final TextView contentTextView = (TextView)rootView.findViewById(R.id.contentTextView);
 
+            titleTextView.setText(postTitle);
+
+            Post.initFromAVObjectId(postId, new GetPostCallback() {
+                @Override
+                public void done(Post post) {
+                    contentTextView.setText(post.getContent());
+                }
+            });
             return rootView;
         }
     }
