@@ -34,6 +34,15 @@
             android:layout_alignLeft="@+id/titleTextView"
             android:layout_alignStart="@+id/titleTextView"
             />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_reply"
+            android:id="@+id/button"
+            android:layout_below="@+id/contentWebView"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
 
 </ScrollView>
