@@ -21,12 +21,20 @@
         </activity>
         <activity
             android:name="com.nextcloudmedia.tomorrow.PostDetailsActivity"
-            android:parentActivityName="com.nextcloudmedia.tomorrow.MainActivity"
-            android:label="@string/title_activity_post_details" >
-
+            android:label="@string/title_activity_post_details"
+            android:parentActivityName="com.nextcloudmedia.tomorrow.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.nextcloudmedia.tomorrow.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.nextcloudmedia.tomorrow.CreatePostRelyActivity"
+            android:parentActivityName="com.nextcloudmedia.tomorrow.PostDetailsActivity"
+            android:label="@string/title_activity_create_post_rely" >
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.nextcloudmedia.tomorrow.PostDetailsActivity" />
         </activity>
     </application>
 

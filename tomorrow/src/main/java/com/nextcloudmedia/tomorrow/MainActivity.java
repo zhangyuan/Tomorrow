@@ -36,8 +36,6 @@ import java.util.Properties;
 public class MainActivity extends ActionBarActivity {
     String app_id = "";
     String app_key = "";
-    static String POST_TITLE_MESSAGE = "POST_TITLE";
-    static String POST_ID_MESSAGE = "POST_ID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,8 +154,8 @@ public class MainActivity extends ActionBarActivity {
 
                             Post post = adapter.getItem(position);
 
-                            intent.putExtra(POST_TITLE_MESSAGE, post.getTitle());
-                            intent.putExtra(POST_ID_MESSAGE, post.getId());
+                            intent.putExtra(PostDetailsActivity.POST_TITLE_MESSAGE, post.getTitle());
+                            intent.putExtra(PostDetailsActivity.POST_ID_MESSAGE, post.getId());
 
                             startActivity(intent);
                         }
@@ -169,8 +167,6 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onScrollStateChanged(AbsListView absListView, int scrollState) {
             int lastIndex = adapter.getCount() - 1;
-
-            Log.d("Yuan", "** visibleLastIndex === " + visibleLastIndex + "; lastIndex = " + lastIndex);
 
             if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && visibleLastIndex == lastIndex) {
                 loadPosts(adapter.getCount());

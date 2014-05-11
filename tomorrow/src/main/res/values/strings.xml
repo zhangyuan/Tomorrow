@@ -6,5 +6,7 @@
     <string name="action_settings">设置</string>
     <string name="title_activity_post_details">详情</string>
     <string name="create_reply">留言</string>
+    <string name="title_activity_create_post_rely">创建留言</string>
+    <string name="submit">提交</string>
 
 </resources>
