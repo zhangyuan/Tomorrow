@@ -17,6 +17,16 @@ public class Reply {
     final String CONTENT = "content";
     final String POST = "post";
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    String id;
+
     public Reply(String postId, String content) {
         avObject = new AVObject("Reply");
         this.postId = postId;
@@ -34,9 +44,9 @@ public class Reply {
             public void done(AVException e) {
                 if (e == null)
                 {
+                    reply.setId(avObject.getObjectId());
                     callback.done(reply);
                 } else {
-                    Log.d("Yuan", "Reply#save" + e.getMessage());
                     e.printStackTrace();
                 }
             }

@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,6 +44,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         initAVOS();
+        initApp();
 
         setContentView(R.layout.activity_main);
 
@@ -53,6 +55,15 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    public void initApp()
+    {
+        App app = App.getInstance();
+        final TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        
+        app.setDeviceId(tm.getDeviceId());
+        app.setLine1Number(tm.getLine1Number());
+        app.setSubscriberId(tm.getSubscriberId());
+    }
     public void initAVOS() {
         try {
             InputStream inputStream = getAssets().open("app.properties");

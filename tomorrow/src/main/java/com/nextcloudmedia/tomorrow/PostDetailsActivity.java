@@ -98,7 +98,7 @@ public class PostDetailsActivity extends ActionBarActivity {
                     createReplyButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Intent intent = new Intent(getActivity(), CreatePostRelyActivity.class);
+                            Intent intent = new Intent(getActivity(), CreateRelyActivity.class);
 
                             intent.putExtra(POST_TITLE_MESSAGE, postTitle);
                             intent.putExtra(POST_ID_MESSAGE, postId);

@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,11 +18,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nextcloudmedia.tomorrow.models.Reply;
+import com.nextcloudmedia.tomorrow.models.ReplyLog;
 import com.nextcloudmedia.tomorrow.utils.SaveReplyCallback;
+import com.nextcloudmedia.tomorrow.utils.SaveReplyLogCallback;
 
 import java.util.jar.Manifest;
 
-public class CreatePostRelyActivity extends ActionBarActivity {
+public class CreateRelyActivity extends ActionBarActivity {
     String postTitle;
     String postId;
 
@@ -93,18 +96,25 @@ public class CreatePostRelyActivity extends ActionBarActivity {
                 Bundle savedInstanceState) {
             final View rootView = inflater.inflate(R.layout.fragment_create_post_rely, container, false);
 
-            Button button = (Button) rootView.findViewById(R.id.createReplyButton);
+            final Button button = (Button) rootView.findViewById(R.id.createReplyButton);
+
 
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     TextView replyEditText = (TextView) rootView.findViewById(R.id.replyEditText);
+                    button.setEnabled(false);
 
                     Reply reply = new Reply(postId, replyEditText.getText().toString());
 
                     reply.save(new SaveReplyCallback() {
                         @Override
                         public void done(Reply reply) {
+                            App app = App.getInstance();
+
+                            ReplyLog replyLog = new ReplyLog(reply.getId(), app.getDeviceId(), app.getLine1Number(), app.getSubscriberId());
+                            replyLog.saveInBackground();
+
                             Intent intent = new Intent(getActivity(), PostDetailsActivity.class);
                             intent.putExtra(PostDetailsActivity.POST_ID_MESSAGE, postId);
                             intent.putExtra(PostDetailsActivity.POST_TITLE_MESSAGE, postTitle);

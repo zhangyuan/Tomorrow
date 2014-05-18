@@ -87,7 +87,6 @@ public class Post {
         final AVFile imageFile = getImageFile();
 
         File existedFile = Post.imageFile(cacheDir, imageFile);
-        Log.d("YLog", "getId() => " + getId() + "; imageFile => " + imageFile.getObjectId());
         if(! existedFile.exists()){
             imageFile.getDataInBackground(new GetDataCallback(){
 

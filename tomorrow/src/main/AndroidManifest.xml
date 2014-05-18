@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
@@ -28,7 +29,7 @@
                 android:value="com.nextcloudmedia.tomorrow.MainActivity" />
         </activity>
         <activity
-            android:name="com.nextcloudmedia.tomorrow.CreatePostRelyActivity"
+            android:name=".CreateRelyActivity"
             android:parentActivityName="com.nextcloudmedia.tomorrow.PostDetailsActivity"
             android:label="@string/title_activity_create_post_rely" >
 
