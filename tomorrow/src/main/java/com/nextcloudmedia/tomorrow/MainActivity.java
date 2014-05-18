@@ -123,7 +123,6 @@ public class MainActivity extends ActionBarActivity {
         }
 
         public void loadPosts(int skip) {
-            Log.d("Yuan", "Loading Posts......");
             AVQuery<AVObject> query = Post.newQuery();
             query.setSkip(skip);
             query.setLimit(5);
@@ -132,12 +131,13 @@ public class MainActivity extends ActionBarActivity {
             query.findInBackground(new FindCallback<AVObject>() {
                 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
                 public void done(final List<AVObject> avObjects, AVException e) {
-                    if (e == null) {
-                        adapter.addAll(Post.initFromAVObjects(avObjects));
-                    } else {
-                        Log.d("失败", "查询错误: " + e.getMessage());
+                    if (e != null) {
+                        Toast.makeText(getApplicationContext(), "请求错误 :(", Toast.LENGTH_SHORT).show();
+                        Log.d("YLog", "查询错误: " + e.getMessage());
+                        return;
                     }
 
+                    adapter.addAll(Post.initFromAVObjects(avObjects));
                     if (avObjects.size() == 0) {
                         Toast.makeText(getApplicationContext(), "No more posts.", Toast.LENGTH_SHORT).show();
                         return;

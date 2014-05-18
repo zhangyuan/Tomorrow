@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.avos.avoscloud.AVObject;
 import com.nextcloudmedia.tomorrow.R;
 import com.nextcloudmedia.tomorrow.models.Post;
-import com.nextcloudmedia.tomorrow.utils.DowloadPostImageCallback;
+import com.nextcloudmedia.tomorrow.utils.DownloadPostImageCallback;
 
 import java.util.List;
 
@@ -45,16 +45,18 @@ public class PostListArrayAdapter extends ArrayAdapter<Post> {
         }
 
         final ImageView imageView = (ImageView) newView.findViewById(R.id.postListEntryImageView);
+        imageView.setImageResource(android.R.color.transparent);
+
         TextView textView = (TextView) newView.findViewById(R.id.postListEntryTextView);
 
-        AVObject current = post.getAvObject();
-
-        post.dowloadImageFile(context.getCacheDir(), new DowloadPostImageCallback(){
-            @Override
-            public void done(Bitmap bitmap) {
-                imageView.setImageBitmap(bitmap);
-            }
-        });
+        if(post.getImageFile() != null) {
+            post.downloadImageFile(context.getCacheDir(), new DownloadPostImageCallback() {
+                @Override
+                public void done(Bitmap bitmap) {
+                    imageView.setImageBitmap(bitmap);
+                }
+            });
+        }
 
         textView.setText(post.getTitle());
         return newView;

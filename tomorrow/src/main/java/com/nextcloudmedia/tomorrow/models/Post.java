@@ -10,7 +10,7 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.GetDataCallback;
-import com.nextcloudmedia.tomorrow.utils.DowloadPostImageCallback;
+import com.nextcloudmedia.tomorrow.utils.DownloadPostImageCallback;
 import com.nextcloudmedia.tomorrow.utils.GetPostCallback;
 
 import java.io.File;
@@ -20,9 +20,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by zhangyuan on 5/3/14.
- */
 public class Post {
     AVObject avObject;
 
@@ -78,6 +75,7 @@ public class Post {
     }
 
     public static File imageFile(File cacheDir, AVFile avFile) {
+
         return new File(cacheDir, avFile.getObjectId());
     }
 
@@ -85,37 +83,35 @@ public class Post {
         return avObject.getAVFile("image");
     }
 
-    public void dowloadImageFile(final File cacheDir, final DowloadPostImageCallback callback) {
+    public void downloadImageFile(final File cacheDir, final DownloadPostImageCallback callback) {
         final AVFile imageFile = getImageFile();
 
-        if (imageFile != null) {
-            File existedFile = Post.imageFile(cacheDir, imageFile);
+        File existedFile = Post.imageFile(cacheDir, imageFile);
+        Log.d("YLog", "getId() => " + getId() + "; imageFile => " + imageFile.getObjectId());
+        if(! existedFile.exists()){
+            imageFile.getDataInBackground(new GetDataCallback(){
 
-            if(! existedFile.exists()){
-                imageFile.getDataInBackground(new GetDataCallback(){
+                public void done(byte[] data, AVException e){
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
 
-                    public void done(byte[] data, AVException e){
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-
-                        try {
-                            File saveFile = Post.imageFile(cacheDir, imageFile);
-                            FileOutputStream outStream = new FileOutputStream(saveFile);
-                            outStream.write(data);
-                            outStream.close();
-                        } catch (FileNotFoundException ex) {
-                            ex.printStackTrace();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-
-                        callback.done(bitmap);
+                    try {
+                        File saveFile = Post.imageFile(cacheDir, imageFile);
+                        FileOutputStream outStream = new FileOutputStream(saveFile);
+                        outStream.write(data);
+                        outStream.close();
+                    } catch (FileNotFoundException ex) {
+                        ex.printStackTrace();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
                     }
-                });
-            } else {
-                Bitmap bitmap = BitmapFactory.decodeFile(existedFile.getAbsolutePath());
-                callback.done(bitmap);
-            }
+
+                    callback.done(bitmap);
+                }
+            });
+        } else {
+            Bitmap bitmap = BitmapFactory.decodeFile(existedFile.getAbsolutePath());
+            callback.done(bitmap);
         }
+
     }
 }
-
