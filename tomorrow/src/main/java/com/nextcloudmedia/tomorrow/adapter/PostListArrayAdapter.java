@@ -10,10 +10,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.avos.avoscloud.AVObject;
 import com.nextcloudmedia.tomorrow.R;
 import com.nextcloudmedia.tomorrow.models.Post;
 import com.nextcloudmedia.tomorrow.utils.DownloadPostImageCallback;
+import com.nextcloudmedia.tomorrow.views.FillWidthImageView;
 
 import java.util.List;
 
@@ -44,9 +44,9 @@ public class PostListArrayAdapter extends ArrayAdapter<Post> {
             newView = (LinearLayout) convertView;
         }
 
-        final ImageView imageView = (ImageView) newView.findViewById(R.id.postListEntryImageView);
-        imageView.setImageResource(android.R.color.transparent);
-
+        final FillWidthImageView imageView = (FillWidthImageView) newView.findViewById(R.id.postListEntryImageView);
+        imageView.setImageBitmap(null)
+        ;
         TextView textView = (TextView) newView.findViewById(R.id.postListEntryTextView);
 
         if(post.getImageFile() != null) {

@@ -36,6 +36,7 @@ import java.util.Properties;
 public class MainActivity extends ActionBarActivity {
     String app_id = "";
     String app_key = "";
+    boolean isLoadingPosts = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +124,12 @@ public class MainActivity extends ActionBarActivity {
         }
 
         public void loadPosts(int skip) {
+            if (isLoadingPosts) {
+                return;
+            }
+
+            isLoadingPosts = true;
+
             AVQuery<AVObject> query = Post.newQuery();
             query.setSkip(skip);
             query.setLimit(5);
@@ -131,6 +138,7 @@ public class MainActivity extends ActionBarActivity {
             query.findInBackground(new FindCallback<AVObject>() {
                 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
                 public void done(final List<AVObject> avObjects, AVException e) {
+                    isLoadingPosts = false;
                     if (e != null) {
                         Toast.makeText(getApplicationContext(), "请求错误 :(", Toast.LENGTH_SHORT).show();
                         Log.d("YLog", "查询错误: " + e.getMessage());
@@ -160,6 +168,8 @@ public class MainActivity extends ActionBarActivity {
                             startActivity(intent);
                         }
                     });
+
+
                 }
             });
         }
