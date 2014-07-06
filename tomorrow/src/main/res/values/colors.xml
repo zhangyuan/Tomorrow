@@ -2,4 +2,5 @@
 <resources>
     <color name="entry_bg">#FFF</color>
     <color name="bg">#DDD</color>
+    <color name="white">#FFF</color>
 </resources>

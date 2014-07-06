@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -27,6 +28,8 @@ import com.avos.avoscloud.FindCallback;
 import com.nextcloudmedia.tomorrow.adapter.PostListArrayAdapter;
 import com.nextcloudmedia.tomorrow.models.Post;
 
+import net.simonvt.menudrawer.MenuDrawer;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -38,7 +41,10 @@ public class MainActivity extends ActionBarActivity {
     String app_id = "";
     String app_key = "";
     boolean isLoadingPosts = false;
+    private MenuDrawer mDrawer;
+    private ListView menuListView;
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,13 +52,32 @@ public class MainActivity extends ActionBarActivity {
         initAVOS();
         initApp();
 
-        setContentView(R.layout.activity_main);
+        createMenu();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new NewsListFragment())
                     .commit();
         }
+    }
+
+    private void createMenu() {
+        mDrawer = MenuDrawer.attach(this);
+        mDrawer.setContentView(R.layout.activity_main);
+        mDrawer.setMenuView(R.layout.menu);
+
+        menuListView = (ListView)mDrawer.getMenuView().findViewById(R.id.menuListView);
+
+        String[] items = {"最新", "登录", "设置"};
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, items);
+        menuListView.setAdapter(arrayAdapter);
+
+        mDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_FULLSCREEN);
+        mDrawer.setDrawerIndicatorEnabled(true);
     }
 
     public void initApp()
@@ -88,16 +113,26 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawer.toggleMenu();
+                return true;
+            case R.id.action_settings:
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        final int drawerState = mDrawer.getDrawerState();
+        if (drawerState == MenuDrawer.STATE_OPEN || drawerState == MenuDrawer.STATE_OPENING) {
+            mDrawer.closeMenu();
+            return;
+        }
+
+        super.onBackPressed();
+    }
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -183,6 +218,8 @@ public class MainActivity extends ActionBarActivity {
 
                 }
             });
+
+
         }
 
         @Override
