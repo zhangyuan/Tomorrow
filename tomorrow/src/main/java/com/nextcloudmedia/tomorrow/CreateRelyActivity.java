@@ -103,6 +103,11 @@ public class CreateRelyActivity extends ActionBarActivity {
                 @Override
                 public void onClick(View view) {
                     TextView replyEditText = (TextView) rootView.findViewById(R.id.replyEditText);
+
+                    if(replyEditText.getText().toString().trim().length() == 0){
+                        return;
+                    }
+
                     button.setEnabled(false);
 
                     Reply reply = new Reply(postId, replyEditText.getText().toString());
